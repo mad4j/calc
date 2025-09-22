@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatrice Scientifica</title>
+    <meta name="description" content="Calcolatrice scientifica professionale">
+    <meta name="theme-color" content="#2c3e50">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2FsY29sYXRyaWNlIFNjaWVudGlmaWNhIiwic2hvcnRfbmFtZSI6IkNhbGMiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzJjM2U1MCIsInRoZW1lX2NvbG9yIjoiIzJjM2U1MCIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV0TXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBMU1USWdOVEV5SWo0OGNtVmpkQ0I0UFNJeE1pSWdlVDBpTVRJaUlIZHBaSFJvUFNJME9EZ2lJR2hsYVdkb2REMGlORGc0SWlCeWVEMGlNVElpSUdacGJHdzlJaU16WmpZelpqWWlMejQ4ZEdWNGRDQjRQU0l5TlRZaUlIazlJalkwSWlCbWIyNTBMWE5wZW1VOUlqTTJJaUIwWlhoMExXRnVZMmh2Y2owaWJXbGtaR3hsSWlCbWFXeHNQU0pqZEdrdlEwRjJNU0lnWm05dWRDMW1ZVzFwYkhsOUltMXZibk53WVdObFAybDBZV3hwWXlCdVpYUmliMjlyTFhObGNtbG1JQ1JKVEdGdGNHRmhJRzl5SWladGJXRDljSFZoWldwbElIdG1aU0F2T2c9PSIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .calculator {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .display {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(108, 117, 125, 0.2);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.02) 2px,
+                    rgba(0, 0, 0, 0.02) 4px
+                );
+            pointer-events: none;
+        }
+
+        .expression {
+            font-family: 'Orbitron', monospace;
+            font-weight: 400;
+            font-size: 12px;
+            color: #6c757d;
+            min-height: 18px;
+            word-wrap: break-word;
+            text-align: right;
+            letter-spacing: 1px;
+        }
+
+        .result {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 28px;
+            color: #212529;
+            min-height: 36px;
+            text-align: right;
+            word-wrap: break-word;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            background: rgba(248, 249, 250, 0.9);
+            border: 2px solid rgba(108, 117, 125, 0.2);
+            border-radius: 12px;
+            padding: 15px 8px;
+            font-size: 16px;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: rgba(233, 236, 239, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: rgba(108, 117, 125, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .operator {
+            background: rgba(0, 123, 255, 0.9);
+            color: white;
+            border-color: rgba(0, 123, 255, 0.3);
+        }
+
+        .operator:hover {
+            background: rgba(0, 123, 255, 1);
+            border-color: rgba(0, 123, 255, 0.5);
+        }
+
+        .function {
+            background: rgba(108, 117, 125, 0.9);
+            color: white;
+            font-size: 12px;
+            border-color: rgba(108, 117, 125, 0.3);
+        }
+
+        .function:hover {
+            background: rgba(108, 117, 125, 1);
+            border-color: rgba(108, 117, 125, 0.5);
+        }
+
+        .clear {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+
+        .clear:hover {
+            background: rgba(220, 53, 69, 1);
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
+        .equals {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            border-color: rgba(40, 167, 69, 0.3);
+        }
+
+        .equals:hover {
+            background: rgba(40, 167, 69, 1);
+            border-color: rgba(40, 167, 69, 0.5);
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                margin: 5px;
+                padding: 15px;
+            }
+            
+            button {
+                padding: 12px 6px;
+                font-size: 14px;
+                min-height: 45px;
+            }
+            
+            .result {
+                font-size: 24px;
+                letter-spacing: 1px;
+            }
+            
+            .expression {
+                font-size: 10px;
+            }
+            
+            .function {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="result" id="result">0</div>
+        </div>
+        
+        <div class="buttons">
+            <!-- Prima riga - Funzioni scientifiche -->
+            <button class="function" onclick="addFunction('sin(')">sin</button>
+            <button class="function" onclick="addFunction('cos(')">cos</button>
+            <button class="function" onclick="addFunction('tan(')">tan</button>
+            <button class="function" onclick="addFunction('ln(')">ln</button>
+            <button class="function" onclick="addFunction('log(')">log</button>
+            
+            <!-- Seconda riga - Funzioni avanzate -->
+            <button class="function" onclick="addFunction('sqrt(')">√</button>
+            <button class="function" onclick="squareNumber()">x²</button>
+            <button class="function" onclick="addOperator('^')">xʸ</button>
+            <button class="function" onclick="addNumber('3.14159')">π</button>
+            <button class="function" onclick="addNumber('2.71828')">e</button>
+            
+            <!-- Terza riga - Controlli -->
+            <button class="clear" onclick="clearAll()">C</button>
+            <button class="clear" onclick="clearEntry()">CE</button>
+            <button class="function" onclick="addOperator('(')">(</button>
+            <button class="function" onclick="addOperator(')')">)</button>
+            <button class="operator" onclick="addOperator('/')">÷</button>
+            
+            <!-- Numeri e operatori -->
+            <button onclick="addNumber('7')">7</button>
+            <button onclick="addNumber('8')">8</button>
+            <button onclick="addNumber('9')">9</button>
+            <button class="operator" onclick="addOperator('*')">×</button>
+            <button class="function" onclick="deleteLast()">⌫</button>
+            
+            <button onclick="addNumber('4')">4</button>
+            <button onclick="addNumber('5')">5</button>
+            <button onclick="addNumber('6')">6</button>
+            <button class="operator" onclick="addOperator('-')">-</button>
+            <button class="function" onclick="addFunction('1/')">1/x</button>
+            
+            <button onclick="addNumber('1')">1</button>
+            <button onclick="addNumber('2')">2</button>
+            <button onclick="addNumber('3')">3</button>
+            <button class="operator" onclick="addOperator('+')">+</button>
+            <button class="function" onclick="toggleSign()">±</button>
+            
+            <button class="zero" onclick="addNumber('0')">0</button>
+            <button onclick="addNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentExpression = '';
+        let result = '0';
+        let shouldResetDisplay = false;
+        let waitingForOperand = false;
+        let lastExpression = ''; // Per mantenere l'espressione che ha generato il risultato
+
+        const expressionElement = document.getElementById('expression');
+        const resultElement = document.getElementById('result');
+
+        function updateDisplay() {
+            // Mostra l'espressione corrente o l'ultima che ha generato il risultato
+            let displayExpression = currentExpression;
+            if (shouldResetDisplay && lastExpression) {
+                displayExpression = lastExpression;
+            }
+            
+            // Converti simboli per il display
+            displayExpression = displayExpression
+                .replace(/\*/g, '×')
+                .replace(/\//g, '÷')
+                .replace(/\^/g, '^');
+            
+            expressionElement.textContent = displayExpression;
+            resultElement.textContent = result;
+        }
+
+        function addNumber(num) {
+            // Se stiamo iniziando dopo un calcolo, resetta tutto
+            if (shouldResetDisplay) {
+                currentExpression = '';
+                lastExpression = '';
+                shouldResetDisplay = false;
+            }
+            
+            // Gestisci costanti matematiche
+            if (num === '3.14159' || num === '2.71828') {
+                if (result === '0' || waitingForOperand) {
+                    result = num;
+                    if (currentExpression === '' || waitingForOperand) {
+                        currentExpression = num;
+                    } else {
+                        currentExpression += '*' + num;
+                    }
+                } else {
+                    currentExpression += '*' + num;
+                    result = num;
+                }
+                waitingForOperand = false;
+                updateDisplay();
+                return;
+            }
+            
+            if (waitingForOperand) {
+                result = (num === '.') ? '0.' : num;
+                waitingForOperand = false;
+            } else if (result === '0' && num !== '.') {
+                result = num;
+            } else {
+                result += num;
+            }
+            
+            // Aggiorna l'espressione
+            if (currentExpression === '' || currentExpression === '0') {
+                currentExpression = result;
+            } else if (!waitingForOperand) {
+                // Se stiamo continuando a digitare numeri, aggiorna anche l'espressione
+                let lastOpIndex = Math.max(
+                    currentExpression.lastIndexOf('+'),
+                    currentExpression.lastIndexOf('-'),
+                    currentExpression.lastIndexOf('*'),
+                    currentExpression.lastIndexOf('/'),
+                    currentExpression.lastIndexOf('(')
+                );
+                
+                if (lastOpIndex !== -1) {
+                    currentExpression = currentExpression.substring(0, lastOpIndex + 1) + result;
+                } else {
+                    currentExpression = result;
+                }
+            }
+            
+            updateDisplay();
+        }
+
+        function addOperator(op) {
+            if (shouldResetDisplay) {
+                currentExpression = result;
+                shouldResetDisplay = false;
+                lastExpression = '';
+            }
+            
+            // Se currentExpression è vuoto, usa il risultato corrente
+            if (currentExpression === '' || currentExpression === '0') {
+                currentExpression = result;
+            }
+            
+            // Aggiungi l'operatore all'espressione
+            currentExpression += op;
+            waitingForOperand = true;
+            
+            updateDisplay();
+        }
+
+        function addFunction(func) {
+            try {
+                let currentValue = parseFloat(result);
+                if (isNaN(currentValue)) currentValue = 0;
+                
+                let calculatedResult;
+                let functionExpression = '';
+                
+                switch(func) {
+                    case 'sin(':
+                        calculatedResult = Math.sin(currentValue);
+                        functionExpression = `sin(${currentValue})`;
+                        break;
+                    case 'cos(':
+                        calculatedResult = Math.cos(currentValue);
+                        functionExpression = `cos(${currentValue})`;
+                        break;
+                    case 'tan(':
+                        calculatedResult = Math.tan(currentValue);
+                        functionExpression = `tan(${currentValue})`;
+                        break;
+                    case 'ln(':
+                        calculatedResult = Math.log(currentValue);
+                        functionExpression = `ln(${currentValue})`;
+                        break;
+                    case 'log(':
+                        calculatedResult = Math.log10(currentValue);
+                        functionExpression = `log(${currentValue})`;
+                        break;
+                    case 'sqrt(':
+                        calculatedResult = Math.sqrt(currentValue);
+                        functionExpression = `√(${currentValue})`;
+                        break;
+                    case '1/':
+                        calculatedResult = 1 / currentValue;
+                        functionExpression = `1/(${currentValue})`;
+                        break;
+                    default:
+                        // Per funzioni che richiedono parentesi come parte dell'espressione
+                        currentExpression += func;
+                        result = '0';
+                        updateDisplay();
+                        return;
+                }
+                
+                if (isNaN(calculatedResult) || !isFinite(calculatedResult)) {
+                    result = 'Errore';
+                    lastExpression = '';
+                } else {
+                    result = parseFloat(calculatedResult.toPrecision(12)).toString();
+                    lastExpression = functionExpression;
+                }
+                
+                shouldResetDisplay = true;
+                updateDisplay();
+                
+            } catch (error) {
+                result = 'Errore';
+                lastExpression = '';
+                shouldResetDisplay = true;
+                updateDisplay();
+            }
+        }
+
+        function clearAll() {
+            currentExpression = '';
+            result = '0';
+            shouldResetDisplay = false;
+            waitingForOperand = false;
+            lastExpression = '';
+            updateDisplay();
+        }
+
+        function clearEntry() {
+            result = '0';
+            waitingForOperand = false;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentExpression.length > 0) {
+                currentExpression = currentExpression.slice(0, -1);
+                if (currentExpression === '') {
+                    result = '0';
+                }
+                updateDisplay();
+            }
+        }
+
+        function squareNumber() {
+            try {
+                let currentValue = parseFloat(result);
+                if (isNaN(currentValue)) currentValue = 0;
+                
+                let calculatedResult = currentValue * currentValue;
+                
+                if (isNaN(calculatedResult) || !isFinite(calculatedResult)) {
+                    result = 'Errore';
+                    lastExpression = '';
+                } else {
+                    result = parseFloat(calculatedResult.toPrecision(12)).toString();
+                    lastExpression = `${currentValue}²`;
+                }
+                
+                shouldResetDisplay = true;
+                updateDisplay();
+                
+            } catch (error) {
+                result = 'Errore';
+                lastExpression = '';
+                shouldResetDisplay = true;
+                updateDisplay();
+            }
+        }
+
+        function toggleSign() {
+            if (result !== '0' && result !== 'Errore') {
+                if (result.startsWith('-')) {
+                    result = result.substring(1);
+                } else {
+                    result = '-' + result;
+                }
+                currentExpression = result;
+                updateDisplay();
+            }
+        }
+
+        function calculate() {
+            try {
+                // Se stiamo aspettando un operando, usa il risultato corrente
+                let expr = currentExpression;
+                if (waitingForOperand && result !== '0') {
+                    expr = currentExpression + result;
+                }
+                
+                // Salva l'espressione completa prima del calcolo per il display
+                let displayExpr = expr
+                    .replace(/\*/g, '×')
+                    .replace(/\//g, '÷')
+                    .replace(/\^/g, '^');
+                lastExpression = displayExpr;
+                
+                // Sostituisci le funzioni matematiche per l'evaluazione
+                expr = expr
+                    .replace(/sin\(/g, 'Math.sin(')
+                    .replace(/cos\(/g, 'Math.cos(')
+                    .replace(/tan\(/g, 'Math.tan(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/\^/g, '**')  // Converti ^ in ** per JavaScript
+                    .replace(/1\//g, '1/(');
+
+                // Valuta l'espressione
+                const calculatedResult = eval(expr);
+                
+                if (isNaN(calculatedResult) || !isFinite(calculatedResult)) {
+                    result = 'Errore';
+                    lastExpression = '';
+                } else {
+                    // Arrotonda a 10 cifre decimali per evitare errori di precisione
+                    result = parseFloat(calculatedResult.toPrecision(12)).toString();
+                }
+                
+                shouldResetDisplay = true;
+                waitingForOperand = false;
+            } catch (error) {
+                result = 'Errore';
+                lastExpression = '';
+                shouldResetDisplay = true;
+                waitingForOperand = false;
+            }
+            
+            updateDisplay();
+        }
+
+        // Supporto per tastiera
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9' || key === '.') {
+                addNumber(key);
+            } else if (key === '+' || key === '-') {
+                addOperator(key);
+            } else if (key === '*') {
+                addOperator('*');
+            } else if (key === '/') {
+                event.preventDefault();
+                addOperator('/');
+            } else if (key === '^') {
+                addOperator('^');
+            } else if (key === 'Enter' || key === '=') {
+                event.preventDefault();
+                calculate();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                clearAll();
+            } else if (key === 'Backspace') {
+                deleteLast();
+            } else if (key === '(') {
+                addOperator('(');
+            } else if (key === ')') {
+                addOperator(')');
+            }
+        });
+
+        // Registra Service Worker per PWA
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'calc-v1';
+                const urlsToCache = ['/'];
+                
+                self.addEventListener('install', function(event) {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(function(cache) {
+                                return cache.addAll(urlsToCache);
+                            })
+                    );
+                });
+                
+                self.addEventListener('fetch', function(event) {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then(function(response) {
+                                if (response) {
+                                    return response;
+                                }
+                                return fetch(event.request);
+                            }
+                        )
+                    );
+                });
+            `;
+            
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl);
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
