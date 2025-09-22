@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatrice Scientifica</title>
+    <meta name="description" content="Calcolatrice scientifica professionale">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="result" id="result">0</div>
+        </div>
+        
+        <div class="history-nav">
+            <button id="prev-result" class="nav-btn" title="Risultato precedente">↑</button>
+            <button id="next-result" class="nav-btn" title="Risultato successivo">↓</button>
+        </div>
+        
+        <div class="buttons">
+            <!-- First row: Advanced functions -->
+            <button class="btn function" data-func="sin">sin</button>
+            <button class="btn function" data-func="cos">cos</button>
+            <button class="btn function" data-func="tan">tan</button>
+            <button class="btn function" data-func="log">log</button>
+            <button class="btn function" data-func="ln">ln</button>
+            
+            <!-- Second row: More functions -->
+            <button class="btn function" data-func="sqrt">√</button>
+            <button class="btn function" data-func="pow">x²</button>
+            <button class="btn function" data-func="pi">π</button>
+            <button class="btn function" data-func="e">e</button>
+            <button class="btn clear" id="clear">C</button>
+            
+            <!-- Third row: Parentheses and operations -->
+            <button class="btn operator" data-op="(">(</button>
+            <button class="btn operator" data-op=")">)</button>
+            <button class="btn operator" data-op="/">÷</button>
+            <button class="btn operator" data-op="*">×</button>
+            <button class="btn delete" id="delete">⌫</button>
+            
+            <!-- Fourth row: Numbers -->
+            <button class="btn number" data-num="7">7</button>
+            <button class="btn number" data-num="8">8</button>
+            <button class="btn number" data-num="9">9</button>
+            <button class="btn operator" data-op="-">−</button>
+            <button class="btn operator" data-op="^">x^y</button>
+            
+            <!-- Fifth row: Numbers -->
+            <button class="btn number" data-num="4">4</button>
+            <button class="btn number" data-num="5">5</button>
+            <button class="btn number" data-num="6">6</button>
+            <button class="btn operator" data-op="+">+</button>
+            <button class="btn function" data-func="fact">n!</button>
+            
+            <!-- Sixth row: Numbers -->
+            <button class="btn number" data-num="1">1</button>
+            <button class="btn number" data-num="2">2</button>
+            <button class="btn number" data-num="3">3</button>
+            <button class="btn operator" data-op="%">%</button>
+            <button class="btn function" data-func="1/x">1/x</button>
+            
+            <!-- Seventh row: Zero and decimal -->
+            <button class="btn number span-2" data-num="0">0</button>
+            <button class="btn operator" data-op=".">.</button>
+            <button class="btn equals" id="equals">=</button>
+            <button class="btn function" data-func="ans">Ans</button>
+        </div>
+    </div>
+    
+    <script src="calculator.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
+</body>
+</html>
